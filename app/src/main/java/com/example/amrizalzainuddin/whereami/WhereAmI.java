@@ -36,9 +36,9 @@ public class WhereAmI extends ActionBarActivity {
             double lat = location.getLatitude();
             double lng = location.getLongitude();
             latLongString = "Lat:" + lat + "\nLong:" + lng;
-
-            myLocationText.setText("Your Current Position is:\n" + latLongString);
         }
+
+        myLocationText.setText("Your Current Position is:\n" + latLongString);
     }
 
     @Override
