@@ -13,6 +13,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -20,10 +26,15 @@ import java.util.Locale;
 
 public class WhereAmI extends ActionBarActivity {
 
+    GoogleMap googleMap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_where_am_i);
+
+        googleMap = ((MapFragment)getFragmentManager().findFragmentById(R.id.myMapView)).getMap();
+        googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
         LocationManager locationManager;
         String svcName = Context.LOCATION_SERVICE;
@@ -75,6 +86,9 @@ public class WhereAmI extends ActionBarActivity {
         String addressString = "No address found";
 
         if(location != null){
+            LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentPosition, 17));
+
             double lat = location.getLatitude();
             double lng = location.getLongitude();
             latLongString = "Lat:" + lat + "\nLong:" + lng;
