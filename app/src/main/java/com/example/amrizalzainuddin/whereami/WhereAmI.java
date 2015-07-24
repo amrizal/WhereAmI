@@ -16,7 +16,10 @@ import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -27,6 +30,7 @@ import java.util.Locale;
 public class WhereAmI extends ActionBarActivity {
 
     GoogleMap googleMap;
+    Circle circle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,22 @@ public class WhereAmI extends ActionBarActivity {
 
         googleMap = ((MapFragment)getFragmentManager().findFragmentById(R.id.myMapView)).getMap();
         googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                if (circle == null) {
+                    CircleOptions circleOptions = new CircleOptions();
+
+                    circleOptions.center(new LatLng(0,0));
+                    circleOptions.radius(100);
+                    circleOptions.fillColor(0x110000FF);
+                    circleOptions.strokeColor(0xFF0000FF);
+                    circleOptions.strokeWidth(2.0f);
+
+                    circle = googleMap.addCircle(circleOptions);
+                }
+            }
+        });
 
         LocationManager locationManager;
         String svcName = Context.LOCATION_SERVICE;
@@ -87,7 +107,9 @@ public class WhereAmI extends ActionBarActivity {
 
         if(location != null){
             LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
+
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentPosition, 17));
+            circle.setCenter(currentPosition);
 
             double lat = location.getLatitude();
             double lng = location.getLongitude();
